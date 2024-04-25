@@ -10,7 +10,7 @@ export const sequelize = new Sequelize(
     dialectOptions: {
         ssl: {
             require: true,
-            //rejectUnauthorized: false // Para evitar errores de certificado en entornos de desarrollo, elimina esta línea en producción
+            rejectUnauthorized: false // Para evitar errores de certificado en entornos de desarrollo, elimina esta línea en producción
         }
     }
 }
