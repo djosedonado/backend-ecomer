@@ -48,6 +48,7 @@ export const CreateUser = async (req, res) => {
 export const UpdateUser = async (req, res) => {
   const { id } = req.params;
   const { lastname, firstname, email, password } = req.body;
+  const image = req.file;
   try {
     if (
       lastname === undefined ||
@@ -60,6 +61,7 @@ export const UpdateUser = async (req, res) => {
     if (!data) return res.status(404).json({ message: "User not found" });
     data.lastname = lastname;
     data.firstname = firstname;
+    data.foto = image ? `/uploads/img/${image.filename}` : null;
     data.email = email;
     data.password = password;
     await data.save();
@@ -89,7 +91,7 @@ export const GetUserId = async (req, res) => {
   try {
     if (id === undefined)
       return res.status(300).json({ message: "Not Found Parameter" });
-    const data = await User.findByPk(id);
+    const data = await User.findByPk(id)
     if (!data) return res.status(404).json({ message: "User not found" });
     res.status(200).json({ data });
   } catch (error) {

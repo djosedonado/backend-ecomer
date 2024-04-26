@@ -12,7 +12,8 @@ export const GetArticles = async (req, res) => {
 };
 
 export const CreateArticle = async (req, res) => {
-  const { name, description, image, price, stock, category } = req.body;
+  const { name, description, price, stock, category } = req.body;
+  const image = req.file;
   try {
     if (
       name === undefined ||
@@ -26,21 +27,12 @@ export const CreateArticle = async (req, res) => {
     const saveArticle = await Article.create({
       name,
       description,
-      image,
+      image: image ? `/uploads/img/${image.filename}` : null,
       price,
       stock,
       category,
     });
-    res.json({
-      id: saveArticle.id,
-      name: saveArticle.name,
-      description: saveArticle.description,
-      image: saveArticle.image,
-      price: saveArticle.price,
-      stock: saveArticle.stock,
-      category: saveArticle.category,
-      message: "ARTICLE SAVED",
-    });
+    res.status(200).json({ message: "success", saveArticle});
   } catch (error) {
     return res.status(500).json({ error: error });
   }
@@ -48,7 +40,8 @@ export const CreateArticle = async (req, res) => {
 
 export const UpdateArticle = async (req, res) => {
   const { id } = req.params;
-  const { name, description, image, price, stock, category } = req.body;
+  const { name, description, price, stock, category } = req.body;
+  const image = req.file;
   try {
     if (id === undefined)
       return res.status(404).json({ message: "not found id Parameter" });
@@ -65,12 +58,12 @@ export const UpdateArticle = async (req, res) => {
     if (!data) return res.status(404).json({ message: "Article not found" });
     data.name = name;
     data.description = description;
-    data.image = image;
+    data.image = image ? `/uploads/img/${image.filename}` : null;
     data.price = price;
     data.stock = stock;
     data.category = category;
     await data.save();
-    res.status(200).json({ message: "Article Update"});
+    res.status(200).json({ message: "Article Update" });
   } catch (error) {
     return res.status(500).json({ error: error });
   }
