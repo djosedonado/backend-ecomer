@@ -63,16 +63,10 @@ export const verifyToken = async (req, res) => {
 
 const verifyVerificationToken = (token) => {
   try {
-      // Verifica el token utilizando la clave secreta
       const decodedToken = jwt.verify(token, process.env.SECRET);
-      
-      // Extrae el ID de usuario del token decodificado
       const userId = decodedToken.id;
-
-      // Devuelve el ID de usuario verificado
       return userId;
   } catch (error) {
-      // Si hay algún error al verificar el token, se lanza una excepción
       throw new Error('Invalid verification token');
   }
 };

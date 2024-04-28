@@ -19,9 +19,62 @@ const sendMail = async (email, lastname, firstname, token) => {
     const info = await transport.sendMail({
       from: ` ${process.env.USER_MAIL}`,
       to: email,
-      subject: "VERIFICACION DE CUENTA", // Subject line
-      text: `Please verify your email by clicking on the following link: ${process.env.HOST_URL}/verify/${token}`, // plain text body
-      html: `<p>Please verify your email by clicking on the following link: <a href="${process.env.HOST_URL}/verify/${token}">Verificacion de Correo</a></p>`, // html body
+      subject: "VERIFICACION DE CUENTA",
+      html: `<head>
+      <style>
+          body {
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              padding: 20px;
+              text-align: center;
+          }
+  
+          .container {
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #fff;
+              padding: 20px;
+              border-radius: 5px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              display: flex; /* Usa flexbox */
+              flex-direction: column; /* Alinea los elementos verticalmente */
+              align-items: center; /* Centra los elementos horizontalmente */
+          }
+  
+          h1 {
+              color: #333;
+          }
+  
+          .icon img {
+              width: 100px; /* Tamaño de la imagen */
+              height: auto;
+          }
+  
+          .button {
+              display: inline-block;
+              background-color: #28a745; /* Color verde */
+              color: #fff;
+              text-decoration: none;
+              border-radius: 5px;
+              margin-top: 20px;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <div class="icon">
+              <img src="https://static.doofinder.com/main-files/uploads/2018/05/Queson.png" alt="Verification Image">
+          </div>
+          <div>
+            <h1>CORREO VERIFICADO</h1>
+            <p>${lastname} ${firstname}</p>
+            <p>CONFIRME SU CUENTA POR FAVOR</p>
+          </div>
+          <div>
+            <a href="${process.env.HOST_URL}/verify/${token}" class="button">Confirmar</a>
+          </div>
+      </div>
+  </body>`,
     });
     console.log("Email sent:", info.response);
   } catch (error) {

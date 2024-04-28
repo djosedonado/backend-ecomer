@@ -4,6 +4,7 @@ import { sendMail } from "../../middleware/mail/mail.middleware.js";
 import { verifyVerificationToken } from "./auth.controllers.js";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import { token } from "morgan";
 
 dotenv.config();
 
@@ -20,9 +21,9 @@ export const verifyEmail = async (req, res) => {
     }
     user.isVerified = true;
     await user.save();
-    res.json({ message: "Email verified. You can now login." });
+    res.render('verify', { message: 'Email verified. You can now login.' });
   } catch (error) {
-    console.error("Error verifying email:", error);
+    //console.error("Error verifying email:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -58,6 +59,7 @@ export const CreateUser = async (req, res) => {
     const saveUser = await newUsers.save(); //guarda en la base de datos
 
     const token = await createAccessToken({ id: saveUser.id });
+    //envia el correo
     sendMail(email, lastname, firstname, token);
 
     res.cookie("token", token);
