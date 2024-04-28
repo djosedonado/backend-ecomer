@@ -20,5 +20,13 @@ export const User = sequelize.define('User',{
     },
     password: {
         type: DataTypes.STRING
+    },
+    isVerified:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    rol:{
+        type: DataTypes.STRING,
+        defaultValue: "user",
     }
 });
