@@ -9,7 +9,7 @@ export async function createAccessToken(payload) {
         }
 
         const token = await jwt.sign(payload, process.env.SECRET, {
-            expiresIn: '1h',
+            expiresIn: '2m',
         });
 
         return token;

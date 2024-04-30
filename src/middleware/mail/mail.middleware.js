@@ -71,7 +71,7 @@ const sendMail = async (email, lastname, firstname, token) => {
             <p>CONFIRME SU CUENTA POR FAVOR</p>
           </div>
           <div>
-            <a href="${process.env.HOST_URL}/verify/${token}" class="button">Confirmar</a>
+            <a href="${process.env.HOST_URL}/verifyEmail/${token}" class="button">Confirmar</a>
           </div>
       </div>
   </body>`,

@@ -15,11 +15,9 @@ export const LoginUser = async (req, res) => {
       return res.status(401).json({ message: "Credenciales incorrectas" });
     }
     if (!user.isVerified) {
-      return res
-        .status(401)
-        .json({
-          error: "Email not verified. Please verify your email to login.",
-        });
+      return res.status(401).json({
+        error: "Email not verified. Please verify your email to login.",
+      });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -41,33 +39,36 @@ export const LoginUser = async (req, res) => {
 };
 
 export const verifyToken = async (req, res) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader.split(" ")[1];
+    console.log(authHeader);
+    if (!token)
+      return res.status(401).json({ message: "No se proporcionó un token" });
 
-  if (!token)
-    return res.status(401).json({ message: "No se proporcionó un token" });
-
-  jwt.verify(token, process.env.SECRET, async (err, user) => {
-    if (err) return res.status(403).json({ message: "Token inválido" });
-    const userFound = await User.findByPk(user.id);
-    if (!userFound) return res.status(401).json({ message: "Unauthorized" });
-    return res.status(200).json({
-      id: userFound.id,
-      email: userFound.email,
-      token: token,
-      message: "Token valido",
+    jwt.verify(token, process.env.SECRET, async (err, user) => {
+      if (err) return res.status(403).json({ message: "Token inválido" });
+      const userFound = await User.findByPk(user.id);
+      if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+      return res.status(200).json({
+        id: userFound.id,
+        email: userFound.email,
+        token: token,
+        message: "Token valido",
+      });
     });
-  });
+  } catch (error) {
+    return console.error(error);
+  }
 };
-
 
 const verifyVerificationToken = (token) => {
   try {
-      const decodedToken = jwt.verify(token, process.env.SECRET);
-      const userId = decodedToken.id;
-      return userId;
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+    const userId = decodedToken.id;
+    return userId;
   } catch (error) {
-      throw new Error('Invalid verification token');
+    throw new Error("Invalid verification token");
   }
 };
 

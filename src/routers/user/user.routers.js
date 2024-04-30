@@ -15,13 +15,14 @@ import { AuthToken } from "../../middleware/index.js";
 
 const router = Router();
 
-router.get("/verify/:token", verifyEmail);
+router.get("/verifyEmail/:token", verifyEmail);
+router.get("/verify/status",AuthToken, verifyToken);
 router.get("/users", AuthToken, GetUsers);
 router.post("/users", CreateUser);
 router.post("/login", LoginUser);
 router.put("/users/:id", AuthToken, UpdateUser);
 router.delete("/users/:id", AuthToken, DeleteUser);
 router.post("/users/:id", AuthToken, GetUserId);
-router.get("/verify/status", AuthToken, verifyToken);
+
 
 export default router;
