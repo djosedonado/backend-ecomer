@@ -1,6 +1,6 @@
 import { User } from "../../models/users.js";
-import { createAccessToken } from "../../lib/encryp.js";
-import { sendMail } from "../../middleware/mail/mail.middleware.js";
+import { createAccessToken, generateToken } from "../../lib/encryp.js";
+import { sendMail } from "../../middleware/index.js";
 import { verifyVerificationToken } from "./auth.controllers.js";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
@@ -27,6 +27,33 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+export const verificationMail = async (req, res) => {
+  const { email } = req.params;
+  console.log(email);
+  try {
+    if (email === undefined)
+      return res.status(401).json({ error: "email is required" });
+    const userFound = await User.findOne({ where: { email } });
+    if (!userFound) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (userFound.isVerified) {
+      return res.status(401).json({ error: "el correo ya esta verificado" });
+    }
+    const token = await generateToken({ id: userFound.id });
+    sendMail(userFound.email, userFound.lastname, userFound.firstname, token);
+    console.log(userFound);
+    const user = {
+      id: userFound.id,
+      email: userFound.email,
+      token: token,
+    };
+    res.status(200).json({ message: "success", user });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export const GetUsers = async (req, res) => {
   try {
     const data = await User.findAll();
@@ -38,19 +65,19 @@ export const GetUsers = async (req, res) => {
 };
 
 export const CreateUser = async (req, res) => {
-  const { lastname, firstname, email, password } = req.body;
+  const { lastName, firstName, email, password } = req.body;
   try {
     if (
-      lastname === undefined ||
-      firstname === undefined ||
+      lastName === undefined ||
+      firstName === undefined ||
       email === undefined ||
       password === undefined
     )
       return res.status(404).json({ message: "Not sending parameters" });
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUsers = new User({
-      lastname,
-      firstname,
+      lastname: lastName,
+      firstname: firstName,
       email,
       password: hashedPassword,
     });
@@ -59,7 +86,7 @@ export const CreateUser = async (req, res) => {
 
     const token = await createAccessToken({ id: saveUser.id });
     //envia el correo
-    sendMail(email, lastname, firstname, token);
+    sendMail(email, lastName, firstName, token);
 
     //res.cookie("token", token);
     res.status(200).json({

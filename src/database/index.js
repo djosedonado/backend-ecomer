@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const sequelize = new Sequelize(
+export const _sequelize = new Sequelize(
     process.env.CONNECT, {
     dialect: 'postgres',
     dialectOptions: {
@@ -16,7 +16,7 @@ export const sequelize = new Sequelize(
 }
 );
 
-export const _sequelize = new Sequelize(
+export const sequelize = new Sequelize(
     process.env.DATABASE,
     process.env.USER_DB,
     process.env.PASSWORD,

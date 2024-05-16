@@ -14,7 +14,7 @@ const transport = nodemailer.createTransport({
   },
 });
 
-const sendMail = async (email, lastname, firstname, token) => {
+export const sendMail = async (email, lastname, firstname, token) => {
   try {
     const info = await transport.sendMail({
       from: ` ${process.env.USER_MAIL}`,
@@ -81,5 +81,3 @@ const sendMail = async (email, lastname, firstname, token) => {
     return removeEventListener(transport, "error", error);
   }
 };
-
-export { sendMail };
