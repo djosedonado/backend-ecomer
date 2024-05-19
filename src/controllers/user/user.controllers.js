@@ -76,8 +76,8 @@ export const CreateUser = async (req, res) => {
       return res.status(404).json({ message: "Not sending parameters" });
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUsers = new User({
-      lastname: lastName,
-      firstname: firstName,
+      lastname: lastname,
+      firstname: firstname,
       email,
       password: hashedPassword,
     });
