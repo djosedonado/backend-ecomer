@@ -68,12 +68,15 @@ export const CreateUser = async (req, res) => {
   const { lastname, firstname, email, password } = req.body;
   try {
     if (
-      lastName === undefined ||
-      firstName === undefined ||
+      lastname === undefined ||
+      firstname === undefined ||
       email === undefined ||
       password === undefined
     )
       return res.status(404).json({ message: "Not sending parameters" });
+
+    const exUser = await User.findOne({ email: email });
+    if (exUser) return res.status(404).json({ message: "Usuario ya Existe" });
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUsers = new User({
       lastname: lastname,
@@ -86,13 +89,19 @@ export const CreateUser = async (req, res) => {
 
     const token = await createAccessToken({ id: saveUser.id });
     //envia el correo
-    sendMail(email, lastName, firstName, token);
-
+    sendMail(email, lastname, firstname, token);
+    const data = {
+      id: saveUser.id,
+      lastname: saveUser.lastname,
+      firstname: saveUser.firstname,
+      email: saveUser.email,
+      rol: saveUser.rol,
+    };
+    console.log(data);
     //res.cookie("token", token);
     res.status(200).json({
-      id: saveUser.id,
-      email: saveUser.email,
-      message: "USER SAVED",
+      data,
+      message: "USUARIO CREADO VERIFIQUE SU CORREO",
     });
   } catch (error) {
     return res.status(500).json({ error: error });

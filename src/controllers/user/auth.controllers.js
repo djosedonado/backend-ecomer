@@ -11,13 +11,13 @@ export const LoginUser = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email: email } });
     //console.log(user);
-    if (!user) {
-      return res.status(401).json({ message: "Credenciales incorrectas" });
-    }
     if (!user.isVerified) {
       return res.status(401).json({
-        error: "Email not verified. Please verify your email to login.",
+        message: "Mail not verified. Please verify your email to login.",
       });
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Credenciales incorrectas" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
