@@ -21,7 +21,7 @@ router.post("/verifyMail/:email", limiter, verificationMail); // ENVIA UN CORREO
 router.get("/verify/status",verifyToken); // VERIFICA EL ESTADO DEL TOKEN 
 router.get("/users", AuthToken, GetUsers); // TRAE TODO LOS USUARIOS REGISTRADO EN EL BACKEND
 router.post("/users", CreateUser); // CREA LOS USUARIOS
-router.post("/login", LoginUser);// ESTE ES EL LOGIN
+router.post("/users/login", LoginUser);// ESTE ES EL LOGIN
 router.put("/users/:id", AuthToken, UpdateUser); // ESTE MODIFICA ALGUNOS DATOS DEL USUARIO
 router.delete("/users/:id", AuthToken, DeleteUser); // ELIMINA LOS USUARIOS POR MEDIO DE LA ID
 router.post("/users/:id", AuthToken, GetUserId);// LLAMA A LOS USUARIOS PO MEDIO DE LA ID

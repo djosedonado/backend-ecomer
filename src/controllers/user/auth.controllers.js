@@ -39,10 +39,10 @@ export const LoginUser = async (req, res) => {
 };
 
 export const verifyToken = async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader.split(" ")[1];
+  console.log(authHeader);
   try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader.split(" ")[1];
-    console.log(authHeader);
     if (!token)
       return res.status(401).json({ message: "No se proporcionó un token" });
 
