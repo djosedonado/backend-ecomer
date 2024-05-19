@@ -65,7 +65,7 @@ export const GetUsers = async (req, res) => {
 };
 
 export const CreateUser = async (req, res) => {
-  const { lastName, firstName, email, password } = req.body;
+  const { lastname, firstname, email, password } = req.body;
   try {
     if (
       lastName === undefined ||
