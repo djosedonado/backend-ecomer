@@ -1,4 +1,5 @@
 import { Car } from "../../models/car.js";
+import { Article } from "../../models/article.js";
 
 export const GetCars = async (req, res) => {
   try {
@@ -10,13 +11,19 @@ export const GetCars = async (req, res) => {
   }
 };
 
-
-export const createCars = async (req, res) => {
-  const { brand, model, year, price, stock } = req.body;
+export const AddCars = async (req, res) => {
+  const { idArti, idUser } = req.body;
   try {
-    const data = await Car.create({ brand, model, year, price, stock });
-    res.status(200).json({ message: "Car created" });
+    const stock = Article.findByPk(idArti);
+    if (!stock) return res.status(404).json({ message: "Article not found" });
+    if (stock.stock <= 0) return res.status(404).json({ message: "Noy Stock" });
+    const data = await Car.create({
+      quantity: quantity,
+      ArticleId: idArti,
+      UserId: idUser,
+    });
+    res.status(200).json({ message: "Car created", data });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};

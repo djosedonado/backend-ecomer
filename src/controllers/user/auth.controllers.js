@@ -31,6 +31,7 @@ export const LoginUser = async (req, res) => {
       id: user.id,
       email: user.email,
       token: token,
+      rol: user.rol,
       message: "INICIANDO SESSION",
     });
   } catch (error) {
@@ -54,6 +55,7 @@ export const verifyToken = async (req, res) => {
         id: userFound.id,
         email: userFound.email,
         token: token,
+        rol: userFound.rol,
         message: "Token valido",
       });
     });

@@ -10,7 +10,7 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/articles", AuthToken, GetArticles);
+router.get("/articles", GetArticles);
 router.post("/articles", upload, CreateArticle);
 router.put("/articles/:id", upload, UpdateArticle);
 router.delete("/articles/:id", DeleteArticle);
