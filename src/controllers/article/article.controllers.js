@@ -1,7 +1,11 @@
 import { Article } from "../../models/article.js";
-import dotenv from "dotenv";
+import { config } from "dotenv";
+import { blobServiceClient } from "../../database/azure/storage.database.js";
+import { v4 as uuidv4 } from "uuid";
+import path from "path";
 
-dotenv.config();
+config();
+
 export const GetArticles = async (req, res) => {
   try {
     const data = await Article.findAll();
@@ -15,7 +19,7 @@ export const GetArticles = async (req, res) => {
         description: item.description,
         price: item.price,
         stock: item.stock,
-        image: `${process.env.HOST_BACKEND}${item.image}`,
+        image: `${process.env.HOST_BACKEND}images/${item.image}`,
         category: item.categoryId,
         TradeMarck: item.TradeMarckId,
       });
@@ -27,9 +31,20 @@ export const GetArticles = async (req, res) => {
 };
 
 export const CreateArticle = async (req, res) => {
-  const { name, description, price, stock, idCategory, idMarks } = req.body;
+  const { name, description, price, stock, idCategory, idMarks, container } =
+    req.body;
   const image = req.file;
+  if (!image) return res.status(400).json({ message: "NOT FOUND FILE" });
   try {
+    const { buffer, mimetype } = image;
+    const extension = path.extname(image.originalname);
+    const newFileName = `${uuidv4()}${extension}`;
+    const containerClient = blobServiceClient.getContainerClient(container);
+    await containerClient.getBlockBlobClient(newFileName).uploadData(buffer, {
+      blobHTTPHeaders: { blobContentType: mimetype },
+    });
+    console.log(image);
+
     if (
       name === undefined ||
       description === undefined ||
@@ -43,7 +58,7 @@ export const CreateArticle = async (req, res) => {
     const saveArticle = await Article.create({
       name,
       description,
-      image: image ? `/uploads/img/${image.filename}` : null,
+      image: `${newFileName}`,
       price,
       stock,
       categoryId: idCategory,
@@ -51,7 +66,7 @@ export const CreateArticle = async (req, res) => {
     });
     res.status(200).json({ message: "success", saveArticle });
   } catch (error) {
-    return res.status(500).json({ error: error });
+    return res.status(500).json({ error: error.message });
   }
 };
 
