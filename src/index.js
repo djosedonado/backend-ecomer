@@ -5,7 +5,7 @@ dotenv.config();
 
 async function main() {
   try {
-    await sequelize.sync({/*forze: true*/alert: true});
+    await sequelize.sync({forze: true});
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`Servidor escuchando en el puerto ${PORT}`);
